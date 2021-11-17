@@ -14,7 +14,7 @@ vedio_cap = cv2.VideoCapture(0)
 flag = 0
 
 def face_emojy(frame, f):
-    faces = face_detector.detectMultiScale(frame, 1.3, minSize=(100, 100))
+    faces = face_detector.detectMultiScale(frame, 1.3, minSize=(50, 50))
 
     for (x, y, w, h) in faces:
         face_sticker_resize = cv2.resize(face_sticker, (w, h))
@@ -26,15 +26,14 @@ def face_emojy(frame, f):
     return frame,f
 
 def lip_eye_emojy(frame, f):
-    eyes = eye_detector.detectMultiScale(frame, 1.2, minSize=(50, 50))
+    eyes = eye_detector.detectMultiScale(frame, 1.3, minNeighbors= 15)
 
     for (x, y, w, h) in eyes:
         eye_sticker_resize = cv2.resize(eye_sticker, (w, h))
 
         frame = cvzone.overlayPNG(frame, eye_sticker_resize, [x, y])
-        # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 4)
 
-    lip = lip_detector.detectMultiScale(frame, 1.5, minSize=(30, 30), maxSize=(100, 100))
+    lip = lip_detector.detectMultiScale(frame, 1.3, minNeighbors= 20)
 
     for (x, y, w, h) in lip:
         lip_sticker_resize = cv2.resize(lip_sticker, (w, h))
