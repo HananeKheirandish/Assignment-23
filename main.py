@@ -1,5 +1,6 @@
 import cv2
 import cvzone
+import numpy as np
 
 face_detector = cv2.CascadeClassifier('pack/haarcascade_frontalface_default.xml')
 eye_detector = cv2.CascadeClassifier('pack/haarcascade_eye.xml')
@@ -67,6 +68,19 @@ def rotate_face(frame, f):
 
     return frame, f
 
+def blur_face(frame, f):
+    faces = face_detector.detectMultiScale(frame, 1.3, minSize=(100, 100))
+
+    mask = np.ones((29, 29)) / 841
+
+    for (x, y, w, h) in faces:
+        face = frame[y:y+h, x:x+w]
+        frame[y:y+h, x:x+w] = cv2.filter2D(face, -1, mask)
+    
+    f = 5
+
+    return frame, f
+
 while True:
     ret, frame = vedio_cap.read()
 
@@ -78,7 +92,7 @@ while True:
     key = cv2.waitKey(1)
     if key == ord('0'):
         flag = 0
-    elif key == ord('5'):
+    elif key == ord('6'):
         break
     elif key == ord('1') or flag == 1:
         frame,flag = face_emojy(frame, flag)
@@ -88,5 +102,7 @@ while True:
         frame, flag = checkered_face(frame, flag)
     elif key == ord('4') or flag == 4:
         frame, flag = rotate_face(frame, flag)
+    elif key == ord('5') or flag == 5:
+        frame, flag = blur_face(frame, flag)
     
     cv2.imshow('output', frame)
